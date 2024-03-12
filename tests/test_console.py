@@ -87,24 +87,24 @@ class TestHBNBCommand_show(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "Place", "City", "Amenity", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"create {class_name}"
+                self.command = "create {}".format(class_name)
                 self.assertFalse(self.hbnb_cmd.onecmd(self.command))
-                test_id = storage.all()[f"{class_name}.1"].id
+                test_id = storage.all()["{}.1".format(class_name)].id
 
-                self.command = f"show {class_name} {test_id}"
-                obj = storage.all()[f"{class_name}.{test_id}"]
+                self.command = "show {} {}".format(class_name, test_id)
+                obj = storage.all()["{}.{}".format(class_name, test_id)]
                 self.assert_output_equal(obj.__str__())
 
     def test_show_objects_dot_notation(self):
         classes = ["BaseModel", "User", "State", "Place", "City", "Amenity", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"create {class_name}"
+                self.command = "create {}".format(class_name)
                 self.assertFalse(self.hbnb_cmd.onecmd(self.command))
-                test_id = storage.all()[f"{class_name}.1"].id
+                test_id = storage.all()["{}.1".format(class_name)].id
 
-                self.command = f"{class_name}.show({test_id})"
-                obj = storage.all()[f"{class_name}.{test_id}"]
+                self.command = "show {} {}".format(class_name, test_id)
+                obj = storage.all()["{}.{}".format(class_name, test_id)]
                 self.assert_output_equal(obj.__str__())
 
 
@@ -156,7 +156,7 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"destroy {class_name}"
+                self.command = "destroy " + class_name
                 self.assert_output_equal(correct)
 
     def test_destroy_id_missing_dot_notation(self):
@@ -164,7 +164,7 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"{class_name}.destroy()"
+                self.command = "destroy {}".format(class_name)
                 self.assert_output_equal(correct)
 
     def test_destroy_invalid_id_space_notation(self):
@@ -172,7 +172,7 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"destroy {class_name} 1"
+                
                 self.assert_output_equal(correct)
 
     def test_destroy_invalid_id_dot_notation(self):
@@ -180,16 +180,16 @@ class TestHBNBCommand_destroy(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"{class_name}.destroy(1)"
+                self.command = class_name + ".destroy(1)"
                 self.assert_output_equal(correct)
 
     def test_destroy_objects_space_notation(self):
         classes = ["BaseModel", "User", "State", "Place", "City", "Amenity", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"create {class_name}"
+                self.command = "create " + class_name
                 self.assertFalse(self.hbnb_cmd.onecmd(self.command))
-                test_id = storage.all()[f"{class_name}.1"].id
+                test_id = storage.all()[class_name + ".1"].id
 
                 self.command = f"destroy {class_name} {test_id}"
                 obj = storage.all()[f"{class_name}.{test_id}"]
