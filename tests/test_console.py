@@ -191,20 +191,20 @@ class TestHBNBCommand_destroy(unittest.TestCase):
                 self.assertFalse(self.hbnb_cmd.onecmd(self.command))
                 test_id = storage.all()[class_name + ".1"].id
 
-                self.command = f"destroy {class_name} {test_id}"
-                obj = storage.all()[f"{class_name}.{test_id}"]
+                self.command = "destroy {} {}".format(class_name, test_id)
+                obj = storage.all()["{}.{}".format(class_name, test_id)]
                 self.assertNotIn(obj, storage.all())
 
     def test_destroy_objects_dot_notation(self):
         classes = ["BaseModel", "User", "State", "Place", "City", "Amenity", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"create {class_name}"
+                self.command = "create {}".format(class_name)
                 self.assertFalse(self.hbnb_cmd.onecmd(self.command))
-                test_id = storage.all()[f"{class_name}.1"].id
+                obj = storage.all()["{}.{}".format(class_name, test_id)]
 
-                self.command = f"{class_name}.destroy({test_id})"
-                obj = storage.all()[f"{class_name}.{test_id}"]
+                self.command = "{}.destroy({})".format(class_name, test_id)
+                obj = storage.all()["{}.{}".format(class_name, test_id)]
                 self.assertNotIn(obj, storage.all())
 
 
@@ -250,7 +250,7 @@ class TestHBNBCommand_all(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "Place", "City", "Amenity", "Review"]
         with patch("sys.stdout", new=StringIO()) as output:
             for class_name in classes:
-                self.assertFalse(self.hbnb_cmd.onecmd(f"create {class_name}"))
+                result = self.hbnb_cmd.onecmd("create {}".format(class_name))
             self.command = "all"
             for class_name in classes:
                 with self.subTest(class_name=class_name):
@@ -260,7 +260,7 @@ class TestHBNBCommand_all(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "Place", "City", "Amenity", "Review"]
         with patch("sys.stdout", new=StringIO()) as output:
             for class_name in classes:
-                self.assertFalse(self.hbnb_cmd.onecmd(f"create {class_name}"))
+               result = self.hbnb_cmd.onecmd("create {}".format(class_name))
             self.command = ".all()"
             for class_name in classes:
                 with self.subTest(class_name=class_name):
@@ -270,10 +270,10 @@ class TestHBNBCommand_all(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
         with patch("sys.stdout", new=StringIO()) as output:
             for class_name in classes:
-                self.assertFalse(self.hbnb_cmd.onecmd(f"create {class_name}"))
+                result = self.hbnb_cmd.onecmd("create {}".format(class_name))
             for class_name in classes:
                 with self.subTest(class_name=class_name):
-                    self.command = f"all {class_name}"
+                    self.command = "all {}".format(class_name)
                     self.assertIn(class_name, output.getvalue().strip())
                     self.assertNotIn("BaseModel", output.getvalue().strip())
 
@@ -326,7 +326,7 @@ class TestHBNBCommand_update(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"update {class_name}"
+                self.command = "update {}".format(class_name)
                 self.assert_output_equal(correct)
 
     def test_update_invalid_id(self):
@@ -334,7 +334,7 @@ class TestHBNBCommand_update(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.command = f"update {class_name} 1"
+                self.command = "update {} 1".format(class_name)
                 self.assert_output_equal(correct)
 
     def test_update_missing_attr_name(self):
@@ -342,9 +342,9 @@ class TestHBNBCommand_update(unittest.TestCase):
         classes = ["BaseModel", "User", "State", "City", "Amenity", "Place"]
         for class_name in classes:
             with self.subTest(class_name=class_name):
-                self.assertFalse(self.hbnb_cmd.onecmd(f"create {class_name}"))
-                test_id = storage.all()[f"{class_name}.1"].id
-                self.command = f"update {class_name} {test_id}"
+                self.assertFalse(self.hbnb_cmd.onecmd("create {}".format(class_name)))
+                test_id = storage.all()["{}.1".format(class_name)].id
+                self.command = "update {} {}".format(class_name, test_id)
                 self.assert_output_equal(correct)
 
 
@@ -383,7 +383,7 @@ class TestHBNBCommand_update(unittest.TestCase):
 
     def create_instance_and_get_id(self, class_name):
         with patch("sys.stdout", new=StringIO()) as output:
-            self.hbnb_cmd.onecmd(f"create {class_name}")
+            self.hbnb_cmd.onecmd("create {}".format(class_name))
             return output.getvalue().strip()
 
     def test_update_missing_attr_name_space_notation(self):
@@ -392,7 +392,7 @@ class TestHBNBCommand_update(unittest.TestCase):
         for class_name in classes:
             with self.subTest(class_name=class_name):
                 test_id = self.create_instance_and_get_id(class_name)
-                self.command = f"{class_name}.update({{'_id': '{test_id}'}})"
+                self.command = "{}.update({{'_id': '{}'}})".format(class_name, test_id)
                 self.assert_output_equal(correct)
 
     def test_update_missing_attr_value_space_notation(self):
@@ -401,7 +401,7 @@ class TestHBNBCommand_update(unittest.TestCase):
         for class_name in classes:
             with self.subTest(class_name=class_name):
                 test_id = self.create_instance_and_get_id(class_name)
-                self.command = f"{class_name}.update({{'_id': '{test_id}', 'attr_name': ''}})"
+                self.command = "{}.update({{'_id': '{}', 'attr_name': ''}})".format(class_name, test_id)
                 self.assert_output_equal(correct)
 
     def test_update_valid_string_attr_space_notation(self):
@@ -409,9 +409,9 @@ class TestHBNBCommand_update(unittest.TestCase):
         for class_name in classes:
             with self.subTest(class_name=class_name):
                 test_id = self.create_instance_and_get_id(class_name)
-                self.command = f"{class_name}.update({{'_id': '{test_id}', 'attr_name': 'attr_value'}})"
+                self.command = "{}.update({{'_id': '{}', 'attr_name': 'attr_value'}})".format(class_name, test_id)
                 self.assertFalse(self.hbnb_cmd.onecmd(self.command))
-                test_dict = storage.all()[f"{class_name}.{test_id}"].__dict__
+                test_dict = storage.all()["{}.{}".format(class_name, test_id)].__dict__
                 self.assertEqual("attr_value", test_dict["attr_name"])
 
     def test_update_missing_attr_name_dot_notation(self):
@@ -420,7 +420,7 @@ class TestHBNBCommand_update(unittest.TestCase):
         for class_name in classes:
             with self.subTest(class_name=class_name):
                 test_id = self.create_instance_and_get_id(class_name)
-                self.command = f"{class_name}.update({{'_id': '{test_id}'}})"
+                self.command = "{}.update({{'_id': '{}'}})".format(class_name, test_id)
                 self.assert_output_equal(correct)
 
     def test_update_missing_attr_value_dot_notation(self):
@@ -429,7 +429,7 @@ class TestHBNBCommand_update(unittest.TestCase):
         for class_name in classes:
             with self.subTest(class_name=class_name):
                 test_id = self.create_instance_and_get_id(class_name)
-                self.command = f"{class_name}.update({{'_id': '{test_id}', 'attr_name': ''}})"
+                self.command = "{}.update({'_id': '{}', 'attr_name': ''})".format(class_name, test_id)
                 self.assert_output_equal(correct)
 
     def test_update_valid_string_attr_dot_notation(self):
@@ -437,9 +437,9 @@ class TestHBNBCommand_update(unittest.TestCase):
         for class_name in classes:
             with self.subTest(class_name=class_name):
                 test_id = self.create_instance_and_get_id(class_name)
-                self.command = f"{class_name}.update({{'_id': '{test_id}', 'attr_name': 'attr_value'}})"
+                self.command = "{}.update({{'_id': '{}', 'attr_name': 'attr_value'}})".format(class_name, test_id)
                 self.assertFalse(self.hbnb_cmd.onecmd(self.command))
-                test_dict = storage.all()[f"{class_name}.{test_id}"].__dict__
+                test_dict = storage.all()["{}.{}".format(class_name, test_id)].__dict__
                 self.assertEqual("attr_value", test_dict["attr_name"])
     
     def test_update_valid_string_attr_dot_notation(self):
