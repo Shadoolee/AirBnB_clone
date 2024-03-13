@@ -441,7 +441,8 @@ class TestHBNBCommand_update(unittest.TestCase):
                 self.assertFalse(self.hbnb_cmd.onecmd(self.command))
                 test_dict = storage.all()[f"{class_name}.{test_id}"].__dict__
                 self.assertEqual("attr_value", test_dict["attr_name"])
- def test_update_valid_string_attr_dot_notation(self):
+    
+    def test_update_valid_string_attr_dot_notation(self):
         with patch("sys.stdout", new=StringIO()) as output:
             HBNBCommand().onecmd("create BaseModel")
             tId = output.getvalue().strip()
