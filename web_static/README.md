@@ -1,0 +1,1 @@
+This is the continuation of my AirBnB project which olatoye clement damilola & Ajayi ooluwaseun david were the authors working together on it and this is the web static directory and this directory would contain all the html and css document involved in this project!
